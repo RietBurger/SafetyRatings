@@ -1,0 +1,27 @@
+﻿@*@model IEnumerable<SafetyRatings.Models.SafetyViewModel>*@
+
+@model SafetyRatings.Models.SafetyViewModel
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+@*@model SafetyRatings.Models.SafetyViewModel*@
+
+@*@{
+        ViewBag.Title = "Safest";
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }*@
+
+<h2>Safest</h2>
+
+<label>Place Name</label>
+<p>@Html.DisplayFor(model => model.Name)</p>
+<label>Place Type</label>
+<p>@Html.DisplayFor(model => model.SubType)</p>
+<label>Place Safety Rating</label>
+<p>@Html.DisplayFor(model => model.SafetyScore)</p>
+
