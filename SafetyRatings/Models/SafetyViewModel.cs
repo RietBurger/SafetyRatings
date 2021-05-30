@@ -15,10 +15,12 @@ namespace SafetyRatings.Models
         public string SubType { get; set; }
         public string SafetyScore { get; set; }
         public SafetyScores Scores { get; set; }
+        public string safetyComment { get; set; }
 
 
         public int PlaceId { get; set; }
         public PlaceName Place { get; set; }
+
 
         
     }
@@ -32,16 +34,19 @@ namespace SafetyRatings.Models
         Berlin
     }
 
-    public class SafetyScores
+    public enum SafetyScores
     {
-        public string LGBTQ { get; set; }
-        public string Women { get; set; }
-        public string Overall { get; set; }
-
+        overall,
+        lgbtq,
+        medical,
+        physicalHarm,
+        politicalFreedom,
+        theft,
+        women
     }
 
 
-    
+
 
     //get_new_token()
     //{

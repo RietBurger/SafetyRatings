@@ -9,42 +9,35 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Index</h2>
-
-@*@model SafetyRatings.Models.SafetyViewModel*@
-
-@*@{
-        ViewBag.Title = "Safest";
-        Layout = "~/Views/Shared/_Layout.cshtml";
-    }*@
-
-<h2>Safest</h2>
+<h2>Safest Place within 1km Radius</h2>
 
 @using (Html.BeginForm())
 {
 <div>
-    @*@Html.DropDownList("PlaceSelect",
-        new SelectList(Enum.GetValues(typeof(PlaceName))),
-        "Select Place",
-        new { @class = "form-control"})*@
+    <div>
+        <label>Select a place</label>
+        <br/>
+        @Html.DropDownListFor(model => model.Place,
+           new SelectList(Enum.GetValues(typeof(PlaceName))))
 
-    @Html.DropDownListFor(model => model.Place,
-        new SelectList(Enum.GetValues(typeof(PlaceName))),
-        "Select Place")
+    </div>
+<br/>
+    <div>
+        <label>Select a measurement</label>
+        <br/>
+        @Html.DropDownListFor(model => model.Scores,
+            new SelectList(Enum.GetValues(typeof(SafetyScores))))
 
-    @*my id and name is PlaceSelect*@
-</div>
+    </div>
+    <br/>
     <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
+        <div>
             <input type="submit" value="Get Rating" class="btn btn-default" />
         </div>
     </div>
+</div>
 
 
-}
-
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
 }
 
 
@@ -55,4 +48,6 @@
     <p>@Html.DisplayFor(model => model.SubType)</p>
     <label>Place Safety Rating</label>
     <p>@Html.DisplayFor(model => model.SafetyScore)</p>
+    <label>Safety Rating Comment</label>
+    <p>@Html.DisplayFor(model => model.safetyComment)</p>
 </div>

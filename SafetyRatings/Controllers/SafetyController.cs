@@ -23,16 +23,19 @@ namespace SafetyRatings.Controllers
         };
 
         // oAuth Token
-        string token = "84v2CwQXJO3NwzO14Zpc27YqN5cQ";
+        string token = "7GX03jUEVQl23OBEnrwhbdpMOD8A";
+        string fetchScore = "overall";
+        string comment = "An average of the 6 “sub”-categories.Score go from 1 (very safe) to 100 (very dangerous).";
         // NewYork
         Uri baseUrl = new Uri("https://test.api.amadeus.com/v1/safety/safety-rated-locations?latitude=40.755653&longitude=-73.985303&radius=1");
-
 
         [HttpGet]
         // GET: Safety
         public ActionResult Index()
         {
             
+            
+
             // see if token is still valid. if not, get new token
             token = Check_token_validity(ref token);
 
@@ -57,6 +60,7 @@ namespace SafetyRatings.Controllers
                     Name = "Error Description" + response.StatusDescription.ToString(),
                     SubType = "Error Code: " + statusCode.ToString(),
                     SafetyScore = "Sorry, try again",
+                    safetyComment = comment,
                 };
                 ModelState.AddModelError(string.Empty, "An error occured");
                 token = Get_new_token2(ref token);
@@ -79,6 +83,40 @@ namespace SafetyRatings.Controllers
 
                 Debug.WriteLine(_safetyView.Place); // can access this!!!
 
+                if (_safetyView.Scores.ToString() != null)
+                {
+                    // set score rating param
+                    fetchScore = _safetyView.Scores.ToString();
+
+
+                    // set score rating comment
+
+                    switch (_safetyView.Scores.ToString())
+                    {
+                        case "women":
+                            comment = "Likelihood of inappropriate behavior against females.Score go from 1 (not likely) to 100 (very likely).";
+                            break;
+                        case "overall":
+                            comment = "An average of the 6 “sub”-categories.Score go from 1(very safe) to 100(very dangerous).";
+                            break;
+                        case "lgbtq":
+                            comment = "Likelihood of harm or discrimination against LGBTQ persons or groups and level of caution required at location.Score go from 1(not likely) to 100(very likely).";
+                            break;
+                        case "medical":
+                            comment = "Likelihood of illness or disease, assessment of water and air quality, and access to reliable medical care. Score go from 1 (not likely) to 100 (very likely).";
+                            break;
+                        case "physicalHarm":
+                            comment = "Likelihood of injury due to harmful intent. Score go from 1 (not likely) to 100 (very likely).";
+                            break;
+                        case "politicalFreedom":
+                            comment = "Potential for infringement of political rights or political unrest. Score go from 1 (not likely) to 100 (very likely).";
+                            break;
+                        case "theft":
+                            comment = "Likelihood of theft. Score go from 1 (not likely) to 100 (very likely).";
+                            break;
+                    }
+
+                }
 
                 // set URI
                 switch(_safetyView.Place.ToString())
@@ -103,6 +141,9 @@ namespace SafetyRatings.Controllers
                         break;
 
                 }
+
+                
+                       
 
                 Debug.WriteLine(baseUrl);
 
@@ -140,6 +181,7 @@ namespace SafetyRatings.Controllers
                         Name = "Error Description" + response.StatusDescription.ToString(),
                         SubType = "Error Code: " + statusCode.ToString(),
                         SafetyScore = "Sorry, try again",
+                        safetyComment = "Err",
                     };
                     ModelState.AddModelError(string.Empty, "An error occured");
                     token = Get_new_token2(ref token);
@@ -153,22 +195,29 @@ namespace SafetyRatings.Controllers
         {
             var baseUrl = new Uri("https://test.api.amadeus.com/v1/security/oauth2/token/");
 
-            //var client2 = new RestClient("https://test.api.amadeus.com/v1/security/oauth2/token/");
-            var client2 = new RestClient(baseUrl + token);
-            client2.Timeout = -1;
-            var request2 = new RestRequest(Method.GET);
-            IRestResponse response2 = client2.Execute(request2);
-            Debug.WriteLine("TESTING AUTH THOKEN");
-            Debug.WriteLine(response2.Content);
-
-            var jObjecttokenStat = JObject.Parse(response2.Content);
-
-            foreach (JProperty property2 in jObjecttokenStat.Properties())
+            if (token is null)
             {
-                if (property2.Name.ToString() == "state" && property2.Value.ToString() == "expired")
+                token = Get_new_token2(ref token);
+            }
+            else
+            {
+                //var client2 = new RestClient("https://test.api.amadeus.com/v1/security/oauth2/token/");
+                var client2 = new RestClient(baseUrl + token);
+                client2.Timeout = -1;
+                var request2 = new RestRequest(Method.GET);
+                IRestResponse response2 = client2.Execute(request2);
+                Debug.WriteLine("TESTING AUTH THOKEN");
+                Debug.WriteLine(response2.Content);
+
+                var jObjecttokenStat = JObject.Parse(response2.Content);
+
+                foreach (JProperty property2 in jObjecttokenStat.Properties())
                 {
-                    token = Get_new_token2(ref token);
-                    Debug.WriteLine("new token: " + token);
+                    if (property2.Name.ToString() == "state" && property2.Value.ToString() == "expired")
+                    {
+                        token = Get_new_token2(ref token);
+                        Debug.WriteLine("new token: " + token);
+                    }
                 }
             }
             return token;
@@ -176,13 +225,19 @@ namespace SafetyRatings.Controllers
 
         public string Get_new_token2(ref string token)
         {
+
+            string AccessID = System.Web.Configuration.WebConfigurationManager.AppSettings["AmadeusClientID"];
+            string AccessSecret = System.Web.Configuration.WebConfigurationManager.AppSettings["AmadeusClientSecret"];
+
             var client3 = new RestClient("https://test.api.amadeus.com/v1/security/oauth2/token");
             client3.Timeout = -1;
             var request3 = new RestRequest(Method.POST);
             request3.AddHeader("Content-Type", "application/x-www-form-urlencoded");
             request3.AddParameter("grant_type", "client_credentials");
-            request3.AddParameter("client_id", "JxADxJiWnn4tlRdnKPR5U1duX3kLnCaY");
-            request3.AddParameter("client_secret", "wclab2e0JLTdT0bT");
+            request3.AddParameter("client_id", AccessID);
+            request3.AddParameter("client_secret", AccessSecret);
+            //request3.AddParameter("client_id", "JxADxJiWnn4tlRdnKPR5U1duX3kLnCaY");
+            //request3.AddParameter("client_secret", "wclab2e0JLTdT0bT");
             IRestResponse response3 = client3.Execute(request3);
             Debug.WriteLine(response3.Content);
 
@@ -226,7 +281,8 @@ namespace SafetyRatings.Controllers
             int maxScoreId = 0;
             int currScore = 0;
 
-            string fetchScore = "overall";
+
+            Debug.WriteLine("this is fetchScore: " + fetchScore);
 
             if (jObject["data"] != null)
             {
@@ -255,6 +311,7 @@ namespace SafetyRatings.Controllers
                     Name = jObject["data"][maxScoreId]["name"].ToString(),
                     SubType = jObject["data"][maxScoreId]["subType"].ToString(),
                     SafetyScore = jObject["data"][maxScoreId]["safetyScores"][fetchScore].ToString(),
+                    safetyComment = comment,
                     //Id = jObject["data"][0]["id"].ToString(),
                     //Name = jObject["data"][0]["name"].ToString(),
                     //SubType = jObject["data"][0]["subType"].ToString(),
