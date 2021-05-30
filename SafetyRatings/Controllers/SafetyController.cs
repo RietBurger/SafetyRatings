@@ -23,7 +23,7 @@ namespace SafetyRatings.Controllers
         };
 
         // oAuth Token
-        string token = "7GX03jUEVQl23OBEnrwhbdpMOD8A";
+        string token = "yBgXDYjImceQ6220VyEiBSDmFwdU";
         string fetchScore = "overall";
         string comment = "An average of the 6 “sub”-categories.Score go from 1 (very safe) to 100 (very dangerous).";
         // NewYork
@@ -33,8 +33,9 @@ namespace SafetyRatings.Controllers
         // GET: Safety
         public ActionResult Index()
         {
-            
-            
+            // testing here?
+            //test_set_view();
+
 
             // see if token is still valid. if not, get new token
             token = Check_token_validity(ref token);
@@ -43,7 +44,9 @@ namespace SafetyRatings.Controllers
             IRestResponse response = get_info(ref token, ref baseUrl);
 
             int statusCode = (int)response.StatusCode;
-            Debug.WriteLine(statusCode);
+
+            Debug.Assert(statusCode == 200, "Test #1: Valid response received");
+            //Debug.WriteLine(statusCode);
 
             var jObject = JObject.Parse(response.Content);
 
@@ -54,13 +57,14 @@ namespace SafetyRatings.Controllers
             }
             else
             {
+                Debug.Assert(statusCode != 200, "Test #2: invalid response received: " + statusCode + " in else.");
                 safetyMod = new SafetyViewModel
                 {
                     Id = "Err",
                     Name = "Error Description" + response.StatusDescription.ToString(),
                     SubType = "Error Code: " + statusCode.ToString(),
                     SafetyScore = "Sorry, try again",
-                    safetyComment = comment,
+                    safetyComment = "Error occured",
                 };
                 ModelState.AddModelError(string.Empty, "An error occured");
                 token = Get_new_token2(ref token);
@@ -73,53 +77,60 @@ namespace SafetyRatings.Controllers
         // POST
         public ActionResult Index(SafetyViewModel _safetyView)
         {
-            Debug.WriteLine("TESTING POST");
+            Debug.Assert(_safetyView != null, "Test #3: items allocated to model.");
 
             // NewYork
             //var baseUrl = new Uri("https://test.api.amadeus.com/v1/safety/safety-rated-locations?latitude=40.755653&longitude=-73.985303&radius=1");
 
             if (_safetyView != null)
             {
-
-                Debug.WriteLine(_safetyView.Place); // can access this!!!
+                Debug.Assert(_safetyView.Scores.ToString() != null, "Test #4: Score type is set successfully.");
 
                 if (_safetyView.Scores.ToString() != null)
                 {
                     // set score rating param
-                    fetchScore = _safetyView.Scores.ToString();
-
-
-                    // set score rating comment
-
-                    switch (_safetyView.Scores.ToString())
+                    try
                     {
-                        case "women":
-                            comment = "Likelihood of inappropriate behavior against females.Score go from 1 (not likely) to 100 (very likely).";
-                            break;
-                        case "overall":
-                            comment = "An average of the 6 “sub”-categories.Score go from 1(very safe) to 100(very dangerous).";
-                            break;
-                        case "lgbtq":
-                            comment = "Likelihood of harm or discrimination against LGBTQ persons or groups and level of caution required at location.Score go from 1(not likely) to 100(very likely).";
-                            break;
-                        case "medical":
-                            comment = "Likelihood of illness or disease, assessment of water and air quality, and access to reliable medical care. Score go from 1 (not likely) to 100 (very likely).";
-                            break;
-                        case "physicalHarm":
-                            comment = "Likelihood of injury due to harmful intent. Score go from 1 (not likely) to 100 (very likely).";
-                            break;
-                        case "politicalFreedom":
-                            comment = "Potential for infringement of political rights or political unrest. Score go from 1 (not likely) to 100 (very likely).";
-                            break;
-                        case "theft":
-                            comment = "Likelihood of theft. Score go from 1 (not likely) to 100 (very likely).";
-                            break;
-                    }
+                        fetchScore = _safetyView.Scores.ToString();
 
+
+                        // set score rating comment
+
+                        switch (_safetyView.Scores.ToString())
+                        {
+                            case "women":
+                                comment = "Likelihood of inappropriate behavior against females.Score go from 1 (not likely) to 100 (very likely).";
+                                break;
+                            case "overall":
+                                comment = "An average of the 6 “sub”-categories.Score go from 1(very safe) to 100(very dangerous).";
+                                break;
+                            case "lgbtq":
+                                comment = "Likelihood of harm or discrimination against LGBTQ persons or groups and level of caution required at location.Score go from 1(not likely) to 100(very likely).";
+                                break;
+                            case "medical":
+                                comment = "Likelihood of illness or disease, assessment of water and air quality, and access to reliable medical care. Score go from 1 (not likely) to 100 (very likely).";
+                                break;
+                            case "physicalHarm":
+                                comment = "Likelihood of injury due to harmful intent. Score go from 1 (not likely) to 100 (very likely).";
+                                break;
+                            case "politicalFreedom":
+                                comment = "Potential for infringement of political rights or political unrest. Score go from 1 (not likely) to 100 (very likely).";
+                                break;
+                            case "theft":
+                                comment = "Likelihood of theft. Score go from 1 (not likely) to 100 (very likely).";
+                                break;
+                        }
+                    }
+                    catch
+                    {
+                        Debug.Assert(_safetyView.Scores.ToString() == null, "Test #5: Score type is not set.");
+                    }
                 }
 
+                Debug.Assert(_safetyView.Place.ToString() != null, "Test #6: Place is set successfully.");
+                
                 // set URI
-                switch(_safetyView.Place.ToString())
+                switch (_safetyView.Place.ToString())
                 {
                     case "NewYork":
                         baseUrl = new Uri("https://test.api.amadeus.com/v1/safety/safety-rated-locations?latitude=40.755653&longitude=-73.985303&radius=1");
@@ -306,5 +317,44 @@ namespace SafetyRatings.Controllers
             }
             return safetyMod;
         }
+
+        // tests:
+
+        /*
+        private void test_set_view()
+        {
+            string json = @"{'data':[{'type':'safety - rated - location','id':'Q930402719','self':{ 'type':'https://test.api.amadeus.com/v1/safety/safety-rated-locations/Q930402719','methods':['GET']},'subType':'CITY','name':'Barcelona','geoCode':{ 'latitude':41.385064,'longitude':2.173404},'safetyScores':{ 'lgbtq':39,'medical':69,'overall':45,'physicalHarm':36,'politicalFreedom':50,'theft':44,'women':34}},{'type':'safety -rated-location','id':'Q930402720','self':{ 'type':'https://test.api.amadeus.com/v1/safety/safety-rated-locations/Q930402720','methods':['GET']},'subType':'DISTRICT','name':'Antiga Esquerra de l'Eixample (Barcelona)','geoCode':{ 'latitude':41.3885573,'longitude':2.1573033},'safetyScores':{ 'lgbtq':37,'medical':69,'overall':44,'physicalHarm':34,'politicalFreedom':50,'theft':42,'women':33}}}";
+            JObject jObjectTst;
+            try
+            {
+                jObjectTst = JObject.Parse(json);
+
+
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine("Could not set value, see #101. Error Message: " + e);
+            }
+
+            SafetyViewModel safetyModtst = new SafetyViewModel
+                 {
+                     Id = "Emp",
+                     Name = "Empty",
+                     SubType = "Empty",
+                     SafetyScore = "Empty",
+                 };
+
+            try
+            {
+                safetyModtst = set_view(ref safetyModtst, ref jObjectTst);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Could not set value, see #102. Error Message: " + e);
+            }
+            Debug.Assert(safetyModtst != null, "Test set_view() successfully returned a result");
+            Debug.Assert(safetyModtst.Id.ToString() != "Emp", "Test set_view() successfully set new values");
+        }
+        */
     }
 }
