@@ -17,7 +17,19 @@ namespace SafetyRatings.Models
         public SafetyScores Scores { get; set; }
 
 
+        public int PlaceId { get; set; }
+        public PlaceName Place { get; set; }
+
         
+    }
+
+    public enum PlaceName
+    {
+        NewYork,
+        Barcelona,
+        London,
+        Paris,
+        Berlin
     }
 
     public class SafetyScores
