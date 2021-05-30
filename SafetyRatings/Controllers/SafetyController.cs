@@ -23,7 +23,8 @@ namespace SafetyRatings.Controllers
         };
 
         // oAuth Token
-        string token = "yBgXDYjImceQ6220VyEiBSDmFwdU";
+        string token = System.Web.Configuration.WebConfigurationManager.AppSettings["AmadeusToken"];
+        // see if you can :System.Web.Configuration.WebConfigurationManager.AppSettings["AmadeusToken"] = token; when new token is created
         string fetchScore = "overall";
         string comment = "An average of the 6 “sub”-categories.Score go from 1 (very safe) to 100 (very dangerous).";
         // NewYork
