@@ -140,22 +140,9 @@ namespace SafetyRatings.Controllers
                         baseUrl = new Uri("https://test.api.amadeus.com/v1/safety/safety-rated-locations?latitude=40.755653&longitude=-73.985303&radius=1");
                         break;
 
-                }
-
-                
-                       
+                }              
 
                 Debug.WriteLine(baseUrl);
-
-                //var baseUrl = new Uri("https://test.api.amadeus.com/v1/safety/safety-rated-locations?latitude=40.755653&longitude=-73.985303&radius=1");
-                // new Uri("https://test.api.amadeus.com/v1/safety/safety-rated-locations?latitude=40.755653&longitude=-73.985303&radius=1");
-                //New York: "latitude": 40.755653, "longitude": -73.985303 // new Uri("https://test.api.amadeus.com/v1/safety/safety-rated-locations?latitude=40.755653&longitude=-73.985303&radius=1");
-                //    // Barcelona: "latitude": 41.385064, "longitude": 2.173404 // new Uri("https://test.api.amadeus.com/v1/safety/safety-rated-locations?latitude=40.755653&longitude=-73.985303&radius=1");
-                //    // London: "latitude": 51.511214, "longitude": -0.119824 // new Uri("https://test.api.amadeus.com/v1/safety/safety-rated-locations?latitude=40.755653&longitude=-73.985303&radius=1"); 
-                //    // Paris: "latitude": 48.856614, "longitude": 2.3522219 // new Uri("https://test.api.amadeus.com/v1/safety/safety-rated-locations?latitude=40.755653&longitude=-73.985303&radius=1");
-                //    // Berlin: "latitude": 52.519171, "longitude": 13.406091 // new Uri("https://test.api.amadeus.com/v1/safety/safety-rated-locations?latitude=40.755653&longitude=-73.985303&radius=1");
-
-
 
                 // see if token is still valid. if not, get new token
                 token = Check_token_validity(ref token);
@@ -236,8 +223,6 @@ namespace SafetyRatings.Controllers
             request3.AddParameter("grant_type", "client_credentials");
             request3.AddParameter("client_id", AccessID);
             request3.AddParameter("client_secret", AccessSecret);
-            //request3.AddParameter("client_id", "JxADxJiWnn4tlRdnKPR5U1duX3kLnCaY");
-            //request3.AddParameter("client_secret", "wclab2e0JLTdT0bT");
             IRestResponse response3 = client3.Execute(request3);
             Debug.WriteLine(response3.Content);
 
