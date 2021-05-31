@@ -33,6 +33,7 @@ Insert API Key [addID], API Secret [addSecret] and API Token [addToken] into:
 	...
 </configuration>
 
+If you get an invalid client error, your AmadeusClientID or AmadeusClientSecret values are incorrect or does not exist.
 
 The Tokens has a limited validity period. Once it expires, a new one will be requested by the Web App.
 
