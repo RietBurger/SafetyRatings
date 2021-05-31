@@ -7,16 +7,16 @@ It consumes a public API from Amadeus for Developers.
 The Web App obtains the safety rating for a place, based on Latitude and Longitude provided.
 
 For Authorization information see:
-    • https://developers.amadeus.com/self-service/apis-docs/guides/authorization-262
+     https://developers.amadeus.com/self-service/apis-docs/guides/authorization-262
 
 API Reference:
-    • https://developers.amadeus.com/self-service/category/destination-content/api-doc/safe-place/api-reference
+     https://developers.amadeus.com/self-service/category/destination-content/api-doc/safe-place/api-reference
 
 The API used is for development and has a limit of 400 calls.
 
 To use the application:
-    • The application was developed and tested in Visual Studio 2019.
-    • Once project has been cloned, open file Web.Config
+     The application was developed and tested in Visual Studio 2019.
+     Once project has been cloned, open file Web.Config
 
 
 In Web.Config:
