@@ -15,8 +15,7 @@ namespace SafetyRatings.Models
         public string SubType { get; set; }
         public string SafetyScore { get; set; }
         public SafetyScores Scores { get; set; }
-        public string safetyComment { get; set; }
-
+        public string SafetyComment { get; set; }
         public PlaceName Place { get; set; }  
     }
 
@@ -39,6 +38,7 @@ namespace SafetyRatings.Models
         theft,
         women
     }
+
 
     internal class Global
     {
