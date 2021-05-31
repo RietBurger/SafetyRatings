@@ -17,12 +17,7 @@ namespace SafetyRatings.Models
         public SafetyScores Scores { get; set; }
         public string safetyComment { get; set; }
 
-
-        public int PlaceId { get; set; }
-        public PlaceName Place { get; set; }
-
-
-        
+        public PlaceName Place { get; set; }  
     }
 
     public enum PlaceName
@@ -45,19 +40,12 @@ namespace SafetyRatings.Models
         women
     }
 
-
-
-
-    //get_new_token()
-    //{
-    //    var client = new RestClient("https://test.api.amadeus.com/v1/security/oauth2/token");
-    //    client.Timeout = -1;
-    //    var request = new RestRequest(Method.POST);
-    //    request.AddHeader("Content-Type", "application/x-www-form-urlencoded");
-    //    request.AddParameter("grant_type", "client_credentials");
-    //    request.AddParameter("client_id", "JxADxJiWnn4tlRdnKPR5U1duX3kLnCaY");
-    //    request.AddParameter("client_secret", "wclab2e0JLTdT0bT");
-    //    IRestResponse response = client.Execute(request);
-    //    Console.WriteLine(response.Content);
-    //}
+    internal class Global
+    {
+        public Uri baseUrl = new Uri(uriString: "https://test.api.amadeus.com/v1/safety/safety-rated-locations?latitude=40.755653&longitude=-73.985303&radius=2&page%5Blimit%5D=2");
+        public JObject jObject = null;
+        public string fetchScore = "overall";
+        public string comment = "An average of the 6 “sub”-categories.Score go from 1 (very safe) to 100 (very dangerous).";
+        public string token = System.Web.Configuration.WebConfigurationManager.AppSettings["AmadeusToken"];
+    }
 }
